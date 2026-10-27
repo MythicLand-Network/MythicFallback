@@ -1,0 +1,23 @@
+fallback-servers: [ Lobby, Login ]
+excluded-servers: [ Login ]
+reconnect:
+  enabled: true
+  check-seconds: 5
+  wait-seconds: 10
+messages:
+  request:
+    - '&7&m                                        &r'
+    - '&a&l传送请求'
+    - '&7管理员向你发起了一个跨服传送请求!'
+    - '&7目标服务器: &e{server}'
+    - '&7未选择时, 一段时间后将自动尝试连接。'
+    - '{accept}   {reject}'
+    - '&7&m                                        &r'
+  accept-text: '&a&l[同意]'
+  accept-hover: '&a点击同意传送请求!'
+  reject-text: '&c&l[拒绝]'
+  reject-hover: '&c点击拒绝传送请求!'
+  connecting: '&a正在连接到服务器...'
+  connected: '&a连接成功!'
+  request-rejected: '&c已拒绝传送请求。'
+  reconnect-rejected: '&c连接失败, 已自动拒绝传送请求。'

@@ -1,0 +1,21 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        mavenCentral()
+    }
+}
+
+rootProject.name = 'MythicFallback'
+
+include 'common'
+include 'bukkit'
+include 'velocity'
+include 'universal'
+
+def frameworkDirectory = file('../MythicFramework')
+
+if (!frameworkDirectory.isDirectory()) {
+    throw new GradleException("Missing sibling project MythicFramework: ${frameworkDirectory}")
+}
+
+includeBuild(frameworkDirectory)

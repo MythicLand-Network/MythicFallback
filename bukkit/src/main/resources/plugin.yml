@@ -1,0 +1,5 @@
+name: MythicFallback
+version: '${version}'
+main: cn.mythicland.mythicfallback.bukkit.MythicFallback
+load: POSTWORLD
+authors: [ ShanguanLinG ]

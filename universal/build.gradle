@@ -1,0 +1,35 @@
+plugins {
+    id 'com.gradleup.shadow'
+}
+
+apply from: rootProject.file('../MythicFramework/gradle/runtime-library-manifest.gradle')
+
+dependencies {
+    firstParty project(':common')
+    firstParty project(':bukkit')
+    firstParty project(':velocity')
+    firstParty 'cn.mythicland:mythic-framework-core:1.0.0'
+    firstParty 'cn.mythicland:mythic-framework-bukkit:1.0.0'
+}
+
+tasks.named('shadowJar') {
+    archiveFileName = 'MythicFallback.jar'
+    configurations = [project.configurations.firstPartyEmbedded]
+    exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA'
+}
+
+tasks.named('jar') {
+    archiveFileName = 'MythicFallback-plain.jar'
+}
+
+tasks.named('sourcesJar') {
+    archiveFileName = 'MythicFallback-sources.jar'
+    dependsOn project(':common').tasks.named('generateRuntimeDependencyManifest')
+    from project(':common').sourceSets.main.allSource
+    from project(':bukkit').sourceSets.main.allSource
+    from project(':velocity').sourceSets.main.allSource
+}
+
+tasks.named('assemble') {
+    dependsOn tasks.named('shadowJar')
+}

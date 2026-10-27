@@ -1,0 +1,31 @@
+plugins {
+    id 'com.gradleup.shadow'
+}
+
+apply from: rootProject.file('../MythicFramework/gradle/runtime-library-manifest.gradle')
+
+dependencies {
+    firstParty project(':common')
+    firstParty 'cn.mythicland:mythic-framework-core:1.0.0'
+
+    compileOnly 'com.velocitypowered:velocity-api:3.4.0-SNAPSHOT'
+    annotationProcessor 'com.velocitypowered:velocity-api:3.4.0-SNAPSHOT'
+    testImplementation 'com.velocitypowered:velocity-api:3.4.0-SNAPSHOT'
+}
+
+tasks.named('shadowJar') {
+    archiveFileName = 'MythicFallback-Velocity.jar'
+    configurations = [project.configurations.firstPartyEmbedded]
+}
+
+tasks.named('jar') {
+    archiveFileName = 'MythicFallback-Velocity-plain.jar'
+}
+
+tasks.named('sourcesJar') {
+    archiveFileName = 'MythicFallback-Velocity-sources.jar'
+}
+
+tasks.named('assemble') {
+    dependsOn tasks.named('shadowJar')
+}

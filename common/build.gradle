@@ -1,0 +1,39 @@
+plugins {
+    id 'java-library'
+}
+
+apply from: rootProject.file('../MythicFramework/gradle/runtime-library-manifest.gradle')
+
+configurations {
+    velocityRuntimeLibraries
+}
+
+dependencies {
+    compileOnly 'cn.mythicland:mythic-framework-core:1.0.0'
+    firstPartyRuntimeGraph 'cn.mythicland:mythic-framework-core:1.0.0'
+    testImplementation 'cn.mythicland:mythic-framework-core:1.0.0'
+    testImplementation 'org.yaml:snakeyaml:2.2'
+
+    velocityRuntimeLibraries 'org.yaml:snakeyaml:2.2'
+}
+
+def generatedResources = layout.buildDirectory.dir('generated/runtime-resources')
+def runtimeDependencyManifest = registerRuntimeLibraryManifest(
+        'generateRuntimeDependencyManifest',
+        generatedResources,
+        'META-INF/mythicfallback-libraries.properties',
+        [velocity: configurations.velocityRuntimeLibraries]
+)
+
+tasks.named('processResources') {
+    dependsOn runtimeDependencyManifest
+}
+
+tasks.named('jar') {
+    archiveFileName = 'MythicFallback-Common.jar'
+}
+
+tasks.named('sourcesJar') {
+    archiveFileName = 'MythicFallback-Common-sources.jar'
+    dependsOn runtimeDependencyManifest
+}
