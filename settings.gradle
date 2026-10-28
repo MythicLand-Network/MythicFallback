@@ -5,6 +5,8 @@ pluginManagement {
     }
 }
 
+apply from: file('../MythicFramework/gradle/workspace-build-lock.gradle')
+
 rootProject.name = 'MythicFallback'
 
 include 'common'
