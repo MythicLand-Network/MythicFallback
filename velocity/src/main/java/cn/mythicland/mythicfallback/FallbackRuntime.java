@@ -6,6 +6,7 @@ public final class FallbackRuntime {
     private final MythicFallback plugin;
     private FallbackListener listener;
     private ReconnectService reconnect;
+    private AdmissionQueue admission;
     private CommandMeta commandMeta;
 
     public FallbackRuntime(MythicFallback plugin) {
@@ -17,12 +18,14 @@ public final class FallbackRuntime {
         this.reconnect = new ReconnectService(this.plugin.proxy(), this.plugin, config);
         this.reconnect.updateMessages(ReconnectMessages.load(this.plugin.dataDirectory(), this.getClass().getClassLoader()));
         this.listener = new FallbackListener(this.plugin.proxy(), config, this.reconnect);
+        this.admission = new AdmissionQueue(this.plugin.proxy(), this.plugin, config.admission());
     }
 
     public void enable() {
         this.plugin.proxy().getChannelRegistrar().register(FallbackListener.SHUTDOWN_CHANNEL);
         this.plugin.proxy().getEventManager().register(this.plugin, this.listener);
         this.plugin.proxy().getEventManager().register(this.plugin, this.reconnect);
+        this.plugin.proxy().getEventManager().register(this.plugin, this.admission);
         this.commandMeta = this.plugin.proxy().getCommandManager().metaBuilder("mythicfallback")
                 .aliases("mfb")
                 .plugin(this.plugin)
@@ -36,6 +39,7 @@ public final class FallbackRuntime {
         FallbackConfig config = FallbackConfig.load(this.plugin.dataDirectory(), this.getClass().getClassLoader());
         ReconnectMessages messages = ReconnectMessages.load(this.plugin.dataDirectory(), this.getClass().getClassLoader());
         FallbackListener.Settings settings = FallbackListener.settings(this.plugin.proxy(), config);
+        this.admission.updateConfig(config.admission());
         this.reconnect.updateConfig(config);
         this.reconnect.updateMessages(messages);
         this.listener.updateSettings(settings);
@@ -43,8 +47,10 @@ public final class FallbackRuntime {
 
     public void unload() {
         this.reconnect.close();
+        this.admission.close();
         this.plugin.proxy().getCommandManager().unregister(this.commandMeta);
         this.plugin.proxy().getEventManager().unregisterListener(this.plugin, this.reconnect);
+        this.plugin.proxy().getEventManager().unregisterListener(this.plugin, this.admission);
         this.plugin.proxy().getEventManager().unregisterListener(this.plugin, this.listener);
         this.plugin.proxy().getChannelRegistrar().unregister(FallbackListener.SHUTDOWN_CHANNEL);
         this.listener.close();

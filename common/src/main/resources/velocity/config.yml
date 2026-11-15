@@ -4,6 +4,12 @@ reconnect:
   enabled: true
   check-seconds: 5
   wait-seconds: 10
+# Stagger transfers into the listed servers.
+admission:
+  enabled: false
+  servers: [ ThePit ]
+  batch-size: 1
+  interval-millis: 350
 messages:
   request:
     - '&7&m                                        &r'
